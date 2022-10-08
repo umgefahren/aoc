@@ -1,5 +1,5 @@
-#include <stdio.h>
 #include <stdint.h>
+#include <stdio.h>
 
 int main() {
         FILE * inp_file = fopen("input.txt", "r");
@@ -19,8 +19,7 @@ int main() {
                 b = c;
                 c = current_depth;
                 uint64_t current_sum = a + b + c;
-                if (current_sum > last_sum && slider >= 3)
-                        incremented += 1;
+                if (current_sum > last_sum && slider >= 3) incremented += 1;
                 slider += 1;
         }
         printf("Counter => %llu", incremented);
