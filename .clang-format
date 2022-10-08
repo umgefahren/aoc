@@ -1,0 +1,9 @@
+BasedOnStyle: Google
+IndentWidth: 8
+
+---
+Language: Cpp
+DerivePointerAlignment: false
+PointerAlignment: Middle
+ReferenceAlignment: Middle
+

@@ -1,8 +1,8 @@
+#include <stdbool.h>
 #include <stddef.h>
 #include <stdio.h>
-#include <stdbool.h>
-#include <string.h>
 #include <stdlib.h>
+#include <string.h>
 
 struct Board {
         bool marked[5][5];
@@ -12,16 +12,22 @@ struct Board {
 struct Board read_from_file(FILE * file, int * error) {
         struct Board ret;
         for (int i = 0; i < 5; i++)
-                for (int j = 0; j < 5; j++) 
-                        ret.marked[i][j] = false;
+                for (int j = 0; j < 5; j++) ret.marked[i][j] = false;
         for (int i = 0; i < 5; i++)
-                *error = fscanf(file, "%i %i %i %i %i\n", ret.numbers[i], ret.numbers[i] + 1, ret.numbers[i] + 2, ret.numbers[i] + 3, ret.numbers[i] + 4);
+                *error = fscanf(file, "%i %i %i %i %i\n", ret.numbers[i],
+                                ret.numbers[i] + 1, ret.numbers[i] + 2,
+                                ret.numbers[i] + 3, ret.numbers[i] + 4);
         return ret;
 }
 
 void print_board(const struct Board * board) {
         for (int i = 0; i < 5; i++)
-                printf("%2i%c %2i%c %2i%c %2i%c %2i%c\n", board->numbers[i][0], board->marked[i][0] ? '*' : ' ', board->numbers[i][1], board->marked[i][1] ? '*' : ' ', board->numbers[i][2], board->marked[i][2] ? '*' : ' ', board->numbers[i][3],board->marked[i][3] ? '*' : ' ', board->numbers[i][4], board->marked[i][4] ? '*' : ' ');
+                printf("%2i%c %2i%c %2i%c %2i%c %2i%c\n", board->numbers[i][0],
+                       board->marked[i][0] ? '*' : ' ', board->numbers[i][1],
+                       board->marked[i][1] ? '*' : ' ', board->numbers[i][2],
+                       board->marked[i][2] ? '*' : ' ', board->numbers[i][3],
+                       board->marked[i][3] ? '*' : ' ', board->numbers[i][4],
+                       board->marked[i][4] ? '*' : ' ');
 }
 
 void enter_number(struct Board * board, int number) {
@@ -30,19 +36,22 @@ void enter_number(struct Board * board, int number) {
                         if (board->numbers[i][j] == number) {
                                 board->marked[i][j] = true;
                         }
-
                 }
 }
 
 bool won(const struct Board * board) {
         for (int i = 0; i < 5; i++) {
-                bool line_valid = board->marked[i][0] && board->marked[i][1] && board->marked[i][2] && board->marked[i][3] && board->marked[i][4];
+                bool line_valid = board->marked[i][0] && board->marked[i][1] &&
+                                  board->marked[i][2] && board->marked[i][3] &&
+                                  board->marked[i][4];
                 if (line_valid) {
                         return true;
                 }
         }
         for (int i = 0; i < 5; i++) {
-                bool line_valid = board->marked[0][i] && board->marked[1][i] && board->marked[2][i] && board->marked[3][i] && board->marked[4][i];
+                bool line_valid = board->marked[0][i] && board->marked[1][i] &&
+                                  board->marked[2][i] && board->marked[3][i] &&
+                                  board->marked[4][i];
                 if (line_valid) {
                         return true;
                 }
@@ -54,8 +63,7 @@ int sum_of_unmarked(const struct Board * board) {
         int ret = 0;
         for (int i = 0; i < 5; i++)
                 for (int j = 0; j < 5; j++)
-                        if (!board->marked[i][j])
-                                ret += board->numbers[i][j];
+                        if (!board->marked[i][j]) ret += board->numbers[i][j];
         return ret;
 }
 
@@ -71,19 +79,19 @@ int main() {
         char * token = strtok(first_line_buffer, ",");
         while (token != NULL) {
                 random_nums_count++;
-                random_nums = realloc(random_nums, sizeof(int) * random_nums_count);
+                random_nums =
+                    realloc(random_nums, sizeof(int) * random_nums_count);
                 random_nums[random_nums_count - 1] = atoi(token);
                 token = strtok(NULL, ",");
         }
         fscanf(file, "\n");
         struct Board * boards = malloc(0);
         size_t boards_num;
-        for (size_t i = 0;;i++) {
+        for (size_t i = 0;; i++) {
                 boards = realloc(boards, sizeof(struct Board) * (i + 1));
                 int error;
                 struct Board board = read_from_file(file, &error);
-                if (error == EOF)
-                        break;
+                if (error == EOF) break;
                 boards[i] = board;
                 print_board(&board);
                 boards_num = i;
