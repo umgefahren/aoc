@@ -30,6 +30,10 @@ struct Field new_field(unsigned x_max, unsigned y_max) {
         return ret;
 }
 
+void delete_field(struct Field * field) {
+        free(field->field);
+}
+
 void print_field(const struct Field * field) {
         for (int i = 0; i <= field->y_max; i++) {
                 for (int j = 0; j <= field->x_max; j++) {
@@ -152,6 +156,9 @@ int main(int argc, char ** argv) {
         unsigned occur = count_occur(&field, 2);
 
         printf("occured => %u\n", occur);
+        
+        delete_field(&field);
+        free(arrows);
 
         return 0;
 }
