@@ -10,5 +10,4 @@ add_executable(ex-4-1 ex-4/solution-1.c)
 add_executable(ex-4-2 ex-4/solution-2.c)
 add_executable(ex-5 ex-5/solution.c)
 add_executable(ex-6 ex-6/solution.c)
-
-set_property(TARGET ex-6 PROPERTY C_STANDARD 23)
+add_executable(ex-7 ex-7/solution.c)

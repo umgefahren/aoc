@@ -1,13 +1,11 @@
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdint.h>
-
-typedef unsigned _ExtInt(128) uint128_t;
 
 struct Swarm {
-        uint128_t counters[9];
-        uint128_t count;
+        uint64_t counters[9];
+        uint64_t count;
 };
 
 struct Swarm new_swarm(FILE * file) {
@@ -19,8 +17,7 @@ struct Swarm new_swarm(FILE * file) {
 
         char * token = strtok(line, ",");
 
-        for (unsigned i = 0; i < 9; i++)
-                ret.counters[i] = 0;
+        for (unsigned i = 0; i < 9; i++) ret.counters[i] = 0;
 
         ret.count = 1;
         ret.counters[atoi(token)] += 1;
@@ -38,16 +35,15 @@ struct Swarm new_swarm(FILE * file) {
 
 void print_swarm(const struct Swarm * swarm) {
         for (unsigned i = 0; i < 9; i++)
-                for (unsigned j = 0; j < swarm->counters[i]; j++)
-                        printf("%u,", i);
+                for (unsigned j = 0; j < swarm->counters[i]; j++) printf("%u,", i);
         puts("");
 }
 
 void calculate_cycle(struct Swarm * swarm) {
-        uint128_t new_counters[9] = {0};
-        uint128_t new_count = swarm->count;
+        uint64_t new_counters[9] = {0};
+        uint64_t new_count = swarm->count;
         for (unsigned i = 0; i < 9; i++) {
-                uint128_t number = swarm->counters[i];
+                uint64_t number = swarm->counters[i];
                 if (i == 0) {
                         new_counters[8] += number;
                         new_count += number;
@@ -57,12 +53,9 @@ void calculate_cycle(struct Swarm * swarm) {
                 }
         }
 
-        for (unsigned i = 0; i < 9; i++)
-                swarm->counters[i] = new_counters[i];
+        for (unsigned i = 0; i < 9; i++) swarm->counters[i] = new_counters[i];
         swarm->count = new_count;
 }
-
-
 
 int main(int argc, char ** argv) {
         if (argc != 3) {
@@ -76,14 +69,6 @@ int main(int argc, char ** argv) {
         for (unsigned i = 0; i < days; i++) {
                 calculate_cycle(&swarm);
         }
-        printf("Num of fish => ");
-        char * count_str = "";
-        do {
-                int digit = swarm.count % 10;
-                asprintf(&count_str, "%d%s", digit, count_str);
-                swarm.count /= 10;
-
-        } while (swarm.count != 0);
-        puts(count_str);
+        printf("Num of fish => %llu\n", swarm.count);
         return 0;
 }
