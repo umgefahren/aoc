@@ -30,7 +30,10 @@ struct Field new_field(unsigned x_max, unsigned y_max) {
         return ret;
 }
 
-void delete_field(struct Field * field) { free(field->field); }
+void delete_field(struct Field * field) {
+        for (unsigned i = 0; i <= field->y_max; i++) free(field->field[i]);
+        free(field->field);
+}
 
 void print_field(const struct Field * field) {
         for (int i = 0; i <= field->y_max; i++) {
