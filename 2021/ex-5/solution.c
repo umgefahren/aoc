@@ -3,6 +3,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+enum Part {
+        One,
+        Two,
+};
+
 unsigned max_u(unsigned a, unsigned b) { return a > b ? a : b; }
 
 struct Field {
@@ -75,7 +80,7 @@ bool is_straight(struct Arrow arrow) {
         return arrow.start_x == arrow.end_x || arrow.start_y == arrow.end_y;
 }
 
-void enter_arrow(struct Field * field, struct Arrow arrow) {
+void enter_arrow(struct Field * field, struct Arrow arrow, enum Part part) {
         if (arrow.start_x == arrow.end_x) {
                 unsigned start = arrow.start_y < arrow.end_y ? arrow.start_y : arrow.end_y;
                 unsigned end = arrow.start_y > arrow.end_y ? arrow.start_y : arrow.end_y;
@@ -93,6 +98,7 @@ void enter_arrow(struct Field * field, struct Arrow arrow) {
                             max_u(field->max_field_value, field->field[i][arrow.start_y]);
                 }
         } else {
+                if (part == One) return;
                 int mod_x = arrow.start_x < arrow.end_x ? 1 : -1;
                 int mod_y = arrow.start_y < arrow.end_y ? 1 : -1;
                 int start_x = arrow.start_x;
@@ -108,8 +114,16 @@ void enter_arrow(struct Field * field, struct Arrow arrow) {
         }
 }
 
-int main() {
-        FILE * file = fopen("input.txt", "r");
+int main(int argc, char ** argv) {
+        if (argc != 3)
+                puts("didn't pass enough arguments");
+        char * file_path = argv[1];
+        enum Part part;
+        if (argv[2][0] == '1')
+                part = One;
+        else if (argv[2][0] == '2')
+                part = Two;
+        FILE * file = fopen(file_path, "r");
         size_t arrows_count = 0;
         struct Arrow * arrows = malloc(sizeof(struct Arrow) * 0);
         unsigned x_max = 0;
@@ -118,7 +132,6 @@ int main() {
                 int error;
                 struct Arrow arrow = read_from_file(file, &error);
                 if (error == EOF) break;
-                // print_arrow(&arrow);
                 x_max = max_u(x_max, arrow.start_x);
                 x_max = max_u(x_max, arrow.end_x);
                 y_max = max_u(y_max, arrow.start_y);
@@ -129,14 +142,13 @@ int main() {
         }
         struct Field field = new_field(x_max, y_max);
 
-        printf("Arrows count => %lu\n", arrows_count);
+        printf("arrows count => %lu\n", arrows_count);
 
         for (unsigned i = 0; i < arrows_count; i++) {
                 struct Arrow arrow = arrows[i];
-                enter_arrow(&field, arrow);
+                enter_arrow(&field, arrow, part);
         }
 
-        // print_field(&field);
         unsigned occur = count_occur(&field, 2);
 
         printf("occured => %u\n", occur);
