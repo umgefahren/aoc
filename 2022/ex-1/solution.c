@@ -24,20 +24,14 @@ void insert_into_top(struct Top * p, uint_fast32_t number) {
 
 uint_fast32_t sum_top(const struct Top * p) { return p->one + p->two + p->three; }
 
-int main() {
-        uint64_t start = clock_gettime_nsec_np(CLOCK_UPTIME_RAW);
-
+void solve() {
         FILE * fileptr;
-        char * buffer;
+        char buffer[1000000];
         long filelen;
 
         fileptr = fopen("input.txt", "rb");
-        fseek(fileptr, 0, SEEK_END);
-        filelen = ftell(fileptr);
-        rewind(fileptr);
 
-        buffer = (char *)malloc(filelen * sizeof(char));
-        fread(buffer, filelen, 1, fileptr);
+        fread(buffer, 1000000, 1, fileptr);
         fclose(fileptr);
 
         struct Top top = {.one = 0, .two = 0, .three = 0};
@@ -55,21 +49,29 @@ int main() {
                         current += atoi(curLine);
                 }
                 if (nextLine) *nextLine = '\n';
-                curLine = nextLine ? (nextLine+1) : NULL;
+                curLine = nextLine ? (nextLine + 1) : NULL;
         }
 
         insert_into_top(&top, current);
 
         printf("Max => %u\n", top.one);
         printf("Sum Top => %u\n", sum_top(&top));
+}
 
+int main(int argc, char ** argv) {
+        double t = 0.0;
+        for (int i = 0; i < 10000; ++i) {
+                double startTime = (double)clock() / CLOCKS_PER_SEC;
 
-        uint64_t stop = clock_gettime_nsec_np(CLOCK_UPTIME_RAW);
-        uint64_t delta = stop - start;
+                solve();
 
-        printf("Took => %llu ns\n", delta);
+                double endTime = (double)clock() / CLOCKS_PER_SEC;
 
-        double delta_f = delta;
-        printf("Equivalent to => %f ms\n", delta / 1.0E6);
+                double timeElapsed = endTime - startTime;
+                t += timeElapsed;
+        }
+        t /= 100000;
+        printf("Took %f ms\n", t * 1000);
+
         return 0;
 }
