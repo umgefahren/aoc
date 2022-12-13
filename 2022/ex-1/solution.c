@@ -5,6 +5,8 @@
 #include <string.h>
 #include <time.h>
 
+#include "../utils/timing.h"
+
 struct Top {
         uint_fast32_t one, two, three;
 };
@@ -59,19 +61,7 @@ void solve() {
 }
 
 int main(int argc, char ** argv) {
-        double t = 0.0;
-        for (int i = 0; i < 10000; ++i) {
-                double startTime = (double)clock() / CLOCKS_PER_SEC;
-
-                solve();
-
-                double endTime = (double)clock() / CLOCKS_PER_SEC;
-
-                double timeElapsed = endTime - startTime;
-                t += timeElapsed;
-        }
-        t /= 100000;
-        printf("Took %f ms\n", t * 1000);
+        TIME_SOLUTION(solve);
 
         return 0;
 }
